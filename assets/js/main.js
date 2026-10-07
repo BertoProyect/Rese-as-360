@@ -170,6 +170,66 @@
     }
   })();
 
+
+  /* ------------------------------------------------------------------
+     Counter — portado de React Bits (https://reactbits.dev) a JS sin React.
+     Copyright (c) 2026 David Haz. MIT + Commons Clause License Condition v1.0.
+     Las cifras ruedan desde 0 hasta el valor cuando el contador entra en pantalla.
+     ------------------------------------------------------------------ */
+  (function counters() {
+    var els = document.querySelectorAll("[data-counter]");
+    if (!els.length) return;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    els.forEach(function (el) {
+      var value = parseInt(el.getAttribute("data-counter"), 10) || 0;
+      var places = (el.getAttribute("data-places") || "").split(",").map(function (p) { return parseInt(p, 10); }).filter(Boolean);
+      if (!places.length) {
+        places = String(value).split("").map(function (_, i, a) { return Math.pow(10, a.length - i - 1); });
+      }
+      el.textContent = "";
+      var cols = [];
+      places.forEach(function (place) {
+        var digit = document.createElement("span");
+        digit.className = "counter-digit";
+        var col = document.createElement("span");
+        col.className = "counter-col no-anim";
+        for (var i = 0; i < 10; i++) {
+          var n = document.createElement("span");
+          n.textContent = i;
+          col.appendChild(n);
+        }
+        var target = Math.floor(value / place) % 10;
+        col.style.setProperty("--n", reduceMotion ? target : 0);
+        digit.appendChild(col);
+        el.appendChild(digit);
+        cols.push({ col: col, target: target });
+      });
+
+      function roll() {
+        cols.forEach(function (c, idx) {
+          c.col.classList.remove("no-anim");
+          c.col.style.transitionDelay = (idx * 120) + "ms";
+          c.col.style.setProperty("--n", c.target);
+        });
+      }
+
+      if (reduceMotion) return;
+      // Forzar el estado inicial antes de animar
+      void el.offsetHeight;
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) { io.disconnect(); roll(); }
+          });
+        }, { threshold: 0.5 });
+        io.observe(el);
+      } else {
+        roll();
+      }
+    });
+  })();
+
   // Año del pie
   document.querySelectorAll(".year").forEach(function (el) {
     el.textContent = new Date().getFullYear();
