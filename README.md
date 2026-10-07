@@ -38,7 +38,7 @@ En `assets/js/main.js`, variable `PHONE` (sin `+` ni espacios). También aparece
 ## Desplegar en Cloudflare Pages
 
 1. Cloudflare → Workers & Pages → Create → Pages → Connect to Git.
-2. Elegir el repo `BertoProyect/resenas360`, rama `main`.
+2. Elegir el repo `BertoProyect/Rese-as-360`, rama `main`.
 3. Framework preset: **None**. Build command: vacío. Build output directory: `/`.
 4. Deploy. Después, en *Custom domains*, añadir `resenas360.com` y `www.resenas360.com`.
 5. Si también se compra `reseñas360.com` (en Cloudflare aparece como `xn--reseas360-o6a.com`), crear una redirección 301 a `resenas360.com`.
